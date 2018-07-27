@@ -12,7 +12,8 @@
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit test/e2e/specs",
     "build": "node build/build.js",
-    "analyze": "npm run build --report"
+    "analyze": "npm run build --report",
+    "pub": "sh 1.sh"
   },
   "dependencies": {
     "axios": "^0.17.0",
