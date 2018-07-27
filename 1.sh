@@ -15,19 +15,19 @@ then
   echo "Releasing $VERSION ..."
 
   # build
-  VERSION=$VERSION npm run dist                                  #不清楚
+  #VERSION=$VERSION npm run dist                                  #不清楚
 
   # publish theme
-  echo "Releasing theme-chalk $VERSION ..."
-  cd packages/theme-chalk                                        #进入文件夹
-  npm version $VERSION --message "[release] $VERSION"            #修改当前文件夹下package.json中version的值
-  if [[ $VERSION =~ "beta" ]]                                    #判断版本中是否含有beta字符串
-  then
-    npm publish --tag beta                                       #发布beta版本
-  else
-    npm publish                                                  #发布稳定版本
-  fi
-  cd ../..                                                       #回到主目录
+  #echo "Releasing theme-chalk $VERSION ..."
+  #cd packages/theme-chalk                                        #进入文件夹
+  #npm version $VERSION --message "[release] $VERSION"            #修改当前文件夹下package.json中version的值
+  #if [[ $VERSION =~ "beta" ]]                                    #判断版本中是否含有beta字符串
+  #then
+  #  npm publish --tag beta                                       #发布beta版本
+  #else
+  #  npm publish                                                  #发布稳定版本
+  #fi
+  #cd ../..                                                       #回到主目录
 
   # commit
   git add -A                                                     #git add .和git add -u的集合
@@ -35,16 +35,16 @@ then
   npm version $VERSION --message "[release] $VERSION"            #修改当前文件夹下package.json中version的值
 
   # publish
-  git push eleme master                                          #将本地master代码提交到远程master上
-  git push eleme refs/tags/v$VERSION                             #将本地master代码提交到一个新的远程分支上
+  git push origin master                                          #将本地master代码提交到远程master上
+  git push origin refs/tags/v$VERSION                             #将本地master代码提交到一个新的远程分支上
   git checkout dev                                               #切换dev分支
   git rebase master                                              #合并master分支
-  git push eleme dev                                             #将本地dev代码提交到远程dev上
+  git push origin dev                                             #将本地dev代码提交到远程dev上
 
-  if [[ $VERSION =~ "beta" ]]
-  then
-    npm publish --tag beta
-  else
-    npm publish
-  fi
+  #if [[ $VERSION =~ "beta" ]]
+  #then
+  #  npm publish --tag beta
+  #else
+  #  npm publish
+  #fi
 fi
