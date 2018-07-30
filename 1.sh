@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 git checkout master                                              #切换master分支
 git merge dev                                                    #合并dev分支
 
