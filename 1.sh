@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 git checkout master                                              #切换master分支
 git merge dev                                                    #合并dev分支
 
@@ -41,7 +40,7 @@ then
   git checkout dev                                               #切换dev分支
   git rebase master                                              #合并master分支
   git push origin dev                                             #将本地dev代码提交到远程dev上
-
+  read a
   #if [[ $VERSION =~ "beta" ]]
   #then
   #  npm publish --tag beta
