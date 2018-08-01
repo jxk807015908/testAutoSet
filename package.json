@@ -3,7 +3,7 @@
   "version": "1.0.20",
   "description": "A Vue.js project",
   "author": "gw <2132>",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js development-server",
     "dev-pro": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js production-server",
