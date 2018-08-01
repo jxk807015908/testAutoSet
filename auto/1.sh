@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-git checkout master                                              #切换master分支
-git merge dev                                                    #合并dev分支
+#git checkout master                                              #切换master分支
+#git merge dev                                                    #合并dev分支
 
 #!/usr/bin/env sh
 #set -e用于设置当命令以非零状态退出时，则退出shell。
@@ -13,7 +13,9 @@ read -p "Releasing $VERSION - are you sure? (y/n)" -n 1 -r       #输入一个�
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]                                        #判断输入的值是否是Y或y
 then
-  echo "Releasing $VERSION ..."
+  echo "------------------------"
+  echo "|Releasing $VERSION ...|"
+  echo "------------------------"
 
   # build
   #VERSION=$VERSION npm run dist                                  #不清楚
@@ -30,14 +32,18 @@ then
   #fi
   #cd ../..                                                       #回到主目录
   # commit
-  echo "committing"
+  echo "------------------------"
+  echo "|committing............|"
+  echo "------------------------"
   git add -A                                                     #git add .和git add -u的集合
   git commit -m "[build] $VERSION"                               #提交
   npm version $VERSION --message "[release] $VERSION"            #修改当前文件夹下package.json中version的值
 
 
   # publish
-  commit "publishing"
+  echo "------------------------"
+  echo "|publishing............|"
+  echo "------------------------"
   git push origin master                                          #将本地master代码提交到远程master上
   git push origin refs/tags/v$VERSION                             #将本地master代码提交到一个新的远程分支上
   git checkout dev                                               #切换dev分支
