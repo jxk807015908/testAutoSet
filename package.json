@@ -9,9 +9,9 @@
     "dev-pro": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js production-server",
     "start": "npm run dev",
     "build": "node build/build.js",
-    "pub": "auto/1.sh",
-    "pub2": "auto/2.sh",
-    "pub3": "auto/3.sh build dev",
+    "pub": "cd auto & 1.sh",
+    "pub2": "npm run ./auto/2.sh",
+    "pub3": "./auto/3.sh build dev",
     "createkey": "ssh-keygen"
   },
   "dependencies": {

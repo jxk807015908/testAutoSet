@@ -42,7 +42,7 @@ then
 
   # publish
   echo "------------------------"
-  exho "|publishing............|"
+  echo "|publishing............|"
   echo "------------------------"
   git push origin master                                          #将本地master代码提交到远程master上
   git push origin refs/tags/v$VERSION                             #将本地master代码提交到一个新的远程分支上
