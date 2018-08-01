@@ -5,11 +5,14 @@
   "author": "gw <2132>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js development-server",
+    "dev-pro": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js production-server",
     "start": "npm run dev",
     "build": "node build/build.js",
-    "pub": "sh 1.sh",
-    "pub2": "bash 2.sh"
+    "pub": "1.sh",
+    "pub2": "2.sh",
+    "pub3": "3.sh build dev",
+    "createkey": "ssh-keygen"
   },
   "dependencies": {
     "element-ui": "^2.4.5",
