@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#git checkout master                                              #切换master分支
-#git merge dev                                                    #合并dev分支
+git checkout master                                              #切换master分支
+git merge dev                                                    #合并dev分支
 
 #!/usr/bin/env sh
 #set -e用于设置当命令以非零状态退出时，则退出shell。
@@ -18,7 +18,8 @@ then
   echo "------------------------"
 
   # build
-  #VERSION=$VERSION npm run dist                                  #不清楚
+  VERSION=$VERSION
+  #npm run dist
 
   # publish theme
   #echo "Releasing theme-chalk $VERSION ..."
