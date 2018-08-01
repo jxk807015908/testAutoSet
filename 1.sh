@@ -42,6 +42,8 @@ then
   git rebase master                                              #合并master分支
   git push origin dev                                             #将本地dev代码提交到远程dev上
   read a
+  read a
+  read a
   #if [[ $VERSION =~ "beta" ]]
   #then
   #  npm publish --tag beta
