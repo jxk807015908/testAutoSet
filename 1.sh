@@ -5,7 +5,7 @@ git merge dev                                                    #合并dev分�
 #!/usr/bin/env sh
 #set -e用于设置当命令以非零状态退出时，则退出shell。
 #主要作用是，当脚本执行出现意料之外的情况时，立即退出，避免错误被忽略，导致最终结果不正确
-set -e
+#set -e
 echo "Enter release version: "
 read VERSION                                                     #输入版本号
 
