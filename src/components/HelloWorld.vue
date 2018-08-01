@@ -3,6 +3,7 @@
     <el-select :loading="true">
       <el-option v-for="(obj,index) in abnormalLinkArr" :label="obj.label" :value="obj.value" :key="index"></el-option>
     </el-select>
+    asdasdasdasdas
   </div>
 </template>
 
