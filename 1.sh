@@ -29,13 +29,15 @@ then
   #  npm publish                                                  #发布稳定版本
   #fi
   #cd ../..                                                       #回到主目录
-
   # commit
+  echo "committing"
   git add -A                                                     #git add .和git add -u的集合
   git commit -m "[build] $VERSION"                               #提交
   npm version $VERSION --message "[release] $VERSION"            #修改当前文件夹下package.json中version的值
 
+
   # publish
+  commit "publishing"
   git push origin master                                          #将本地master代码提交到远程master上
   git push origin refs/tags/v$VERSION                             #将本地master代码提交到一个新的远程分支上
   git checkout dev                                               #切换dev分支
