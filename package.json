@@ -5,12 +5,6 @@
   "author": "gw <2132>",
   "private": false,
   "main": "src/main.js",
-  "files": [
-    "lib",
-    "src",
-    "packages",
-    "types"
-  ],
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "dev-pro": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js production-server",
