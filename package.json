@@ -1,6 +1,6 @@
 {
   "name": "testautoset",
-  "version": "1.1.14",
+  "version": "1.1.15",
   "description": "A Vue.js project",
   "author": "gw <2132>",
   "private": false,
@@ -15,12 +15,8 @@
     "pub3": "./auto/3.sh build dev",
     "createkey": "ssh-keygen"
   },
-  "dependencies": {
-
-  },
-  "devDependencies": {
-
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"
