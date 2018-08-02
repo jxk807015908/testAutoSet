@@ -4,10 +4,7 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-auto
-1.sh
-2.sh
-3.sh
+
 # Editor directories and files
 .idea
 .vscode
