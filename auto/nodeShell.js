@@ -15,7 +15,7 @@ process.stdin.on('readable', () => {
     console.log("git add -A:",shell.exec('git add -A').code);
     console.log(`npm version ${_version} --message "[release] ${_version}"`,shell.exec(`npm version ${_version} --message "[release] ${_version}"`).code);
     console.log("git push origin master:",shell.exec('git push origin master').code);
-    console.log(`git push origin refs/tags/v${VERSION}:`,shell.exec(`git push origin refs/tags/v${VERSION}:`).code);
+    console.log(`git push origin refs/tags/v${version}:`,shell.exec(`git push origin refs/tags/v${version}:`).code);
     console.log("git checkout dev :",shell.exec('git checkout dev').code);
     console.log("git rebase master:",shell.exec('git rebase master').code);
     console.log("git push origin dev:",shell.exec('git push origin dev').code);
