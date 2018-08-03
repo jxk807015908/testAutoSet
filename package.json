@@ -13,7 +13,8 @@
     "pub": "cd auto & 1.sh",
     "pub2": "npm run ./auto/2.sh",
     "pub3": "./auto/3.sh build dev",
-    "createkey": "ssh-keygen"
+    "createkey": "ssh-keygen",
+    "pub4": "node auto/nodeShell.js"
   },
   "dependencies": {},
   "devDependencies": {},
