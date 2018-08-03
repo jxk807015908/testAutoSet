@@ -13,10 +13,19 @@ process.stdin.on('readable', () => {
     console.log('开始发布版本v' + version);
 
     console.log("git add -A:",shell.exec('git add -A').code);
-    console.log("npm version $VERSION --message \"[release] $_VERSION\":",shell.exec(`npm version ${_version} --message "[release] ${_version}"`).code);
-    // console.log("git checkout master:",shell.exec('git checkout master').code);
-    // console.log("git checkout master:",shell.exec('git checkout master').code);
-    // console.log("git checkout master:",shell.exec('git checkout master').code);
+    console.log(`npm version ${_version} --message "[release] ${_version}"`,shell.exec(`npm version ${_version} --message "[release] ${_version}"`).code);
+    console.log("git push origin master:",shell.exec('git push origin master').code);
+    console.log(`git push origin refs/tags/v${VERSION}:`,shell.exec(`git push origin refs/tags/v${VERSION}:`).code);
+    console.log("git checkout dev :",shell.exec('git checkout dev').code);
+    console.log("git rebase master:",shell.exec('git rebase master').code);
+    console.log("git push origin dev:",shell.exec('git push origin dev').code);
+    console.log("npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/:",shell.exec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/').code);
+    if(/^beta/.exec(version)){
+      console.log("npm publish --tag beta:",shell.exec('npm publish --tag beta').code);
+    } else {
+      console.log("npm publish:",shell.exec('npm publish').code);
+    }
+
 
     // git checkout master
     // git merge dev
