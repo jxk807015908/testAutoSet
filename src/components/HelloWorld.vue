@@ -1,12 +1,11 @@
 <template>
   <div class="hello">
-    <el-select :loading="true">
+    <el-select v-if="flag1" :loading="true">
       <el-option v-for="(obj,index) in abnormalLinkArr" :label="obj.label" :value="obj.value" :key="index"></el-option>
     </el-select>
-    asdasdasdasdas
-    <p>sdfsadsa</p>
-    <p>wdasdsadwqeqwe</p>
-    <p>sadas</p>
+    <p>sadasddas</p>
+    <el-input v-if="flag2"></el-input>
+    <el-button @click="click">aaaaa</el-button>
   </div>
 </template>
 
@@ -16,6 +15,8 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
+      flag1: true,
+      flag2: true,
       msg: 'Welcome to Your Vue.js App',
       abnormalLinkArr: [{
         label: '全部',
@@ -30,6 +31,12 @@ export default {
         label: '提货',
         value: 2
       }]
+    }
+  },
+  methods:{
+    click(){
+      this.flag1 = !this.flag1
+      this.flag2 = !this.flag2
     }
   }
 }
