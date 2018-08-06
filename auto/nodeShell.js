@@ -1,6 +1,6 @@
 const shell = require('shelljs');
-shellExec('git checkout master');
-shellExec('git merge dev');
+// shellExec('git checkout master');
+// shellExec('git merge dev');
 let version = undefined;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
@@ -47,7 +47,8 @@ process.stdin.on('end', () => {
   let _version = version.replace(/^beta/,'');
 
   console.log('开始发布版本v' + version);
-
+  shellExec('git checkout master');
+  shellExec('git merge dev');
   shellExec('git add -A');
   shellExec(`npm version ${_version} --message "[release] ${_version}"`);
   shellExec('git push origin master');
