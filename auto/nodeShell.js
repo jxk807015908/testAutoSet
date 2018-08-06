@@ -5,8 +5,8 @@ let version = undefined;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
-  const chunk = process.stdin.read();
-  console.log(chunk);
+  const chunk = process.stdin.read().replace(/\n$/, '');
+  // console.log(chunk.constructor);
   if (/^(beta)?(\d+.\d+.\d+)$/.test(chunk)) {
     version = chunk;
     process.stdin.emit('end');
