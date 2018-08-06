@@ -54,7 +54,7 @@ process.stdin.on('end', () => {
   shellExec('git rebase master');
   shellExec('git push origin dev');
   shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
-  shellExec('npm info underscore');
+  shellExec('npm config list');
   if(/^beta/.exec(version)){
     shellExec('npm publish --tag beta');
   } else {
