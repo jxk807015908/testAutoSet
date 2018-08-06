@@ -14,7 +14,9 @@
     "pub2": "npm run ./auto/2.sh",
     "pub3": "./auto/3.sh build dev",
     "createkey": "ssh-keygen",
-    "pub4": "node auto/nodeShell.js"
+    "checkoutNpm:own": "npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/",
+    "checkoutNpm:all": "npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-group/",
+    "pub4": "npm run checkoutNpm:own && node auto/nodeShell.js"
   },
   "dependencies": {},
   "devDependencies": {},
