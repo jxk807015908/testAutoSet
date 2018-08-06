@@ -6,6 +6,7 @@ console.log('请输入版本号:');
 process.stdin.on('readable', () => {
   const chunk = process.stdin.read();
   if (chunk !== null) {
+    process.stdin.emit('end');
     version = chunk;
     let _version = version.replace(/^beta/,'');
     shellExec('git checkout master');
