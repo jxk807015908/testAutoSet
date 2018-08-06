@@ -6,7 +6,7 @@ process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
   const chunk = process.stdin.read();
-  if (/(^beta)?\g.\g.\g/.exec(chunk)) {
+  if (/^(beta)?(\d+.\d+.\d+)$/.test(chunk)) {
     version = chunk;
     process.stdin.emit('end');
 
@@ -59,7 +59,7 @@ process.stdin.on('end', () => {
   shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   shellExec('nrm use own');
   shellExec('npm config list');
-  if(/^beta/.exec(version)){
+  if(/^beta/.test(version)){
     shellExec('npm publish --tag beta');
   } else {
     shellExec('npm publish');
