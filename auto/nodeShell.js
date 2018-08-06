@@ -70,7 +70,7 @@ function shellExec(str) {
   let code = shell.exec(str).code;
   console.log(str + ':');
   console.warn(code);
-  if(!code){
+  if(code){
     console.log('发布出错！！！！！');
     process.exit(0);
   }
