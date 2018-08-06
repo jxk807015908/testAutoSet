@@ -51,7 +51,7 @@ process.stdin.on('end', () => {
   shellExec('git checkout master');
   shellExec('git merge dev');
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${_version}"`);
+  shellExec(`git commit -m "[build] ${_version}"`, true);
   shellExec(`npm version ${_version} --message "[release] ${_version}"`);
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${version}`);
@@ -76,11 +76,11 @@ process.stdin.on('end', () => {
 // read('a');
 // exit(1);
 
-function shellExec(str) {
+function shellExec(str, flag) {
   let code = shell.exec(str).code;
   console.log(str + ': '+ code);
   // console.warn(code);
-  if(code){
+  if(code && !flag){
     console.log('发布出错！！！！！');
     process.exit(0);
   }
