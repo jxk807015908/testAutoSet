@@ -71,7 +71,7 @@ process.stdin.on('end', () => {
 
 function shellExec(str) {
   let code = shell.exec(str).code;
-  console.warn(str + ': '+ code);
+  console.log(str + ': '+ code);
   // console.warn(code);
   if(code){
     console.log('发布出错！！！！！');
