@@ -50,6 +50,7 @@ process.stdin.on('end', () => {
   shellExec('git checkout master');
   shellExec('git merge dev');
   shellExec('git add -A');
+  shellExec(`git commit -m "[build] ${_version}"`);
   shellExec(`npm version ${_version} --message "[release] ${_version}"`);
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${version}`);
