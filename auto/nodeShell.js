@@ -1,14 +1,12 @@
 const shell = require('shelljs');
-const child_process = require('child_process');
-child_process.exec("npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-group/");
-child_process.exit(0);
 // shellExec('git checkout master');
 // shellExec('git merge dev');
 let version = undefined;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
-  const chunk = process.stdin.read().replace(/\n$/, '');
+  let chunk = process.stdin.read();
+  const input = chunk && chunk.replace(/\n$/, '')
   // console.log(chunk.constructor);
   if (/^(beta)?(\d+.\d+.\d+)$/.test(chunk)) {
     version = chunk;
