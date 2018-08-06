@@ -26,7 +26,7 @@ process.stdin.on('readable', () => {
     } else {
       shellExec('npm publish');
     }
-
+    console.log('版本发布成功');
     // console.log("git checkout master:",shell.exec('git checkout master').code);
     // console.log("git merge dev:",shell.exec('git merge dev').code);
 
@@ -57,9 +57,9 @@ process.stdin.on('readable', () => {
     // process.stdout.write(`data: ${chunk}`);
   }
 });
-// process.stdin.on('end', () => {
-//   process.stdout.write('end');
-// });
+process.stdin.on('end', () => {
+  process.stdout.write('end');
+});
 // shell.echo('hahahahahhahahahahhahaha');
 // console.log(shell);
 // var a = shell.read();
