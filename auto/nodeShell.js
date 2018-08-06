@@ -70,7 +70,7 @@ process.stdin.on('end', () => {
 // exit(1);
 
 function shellExec(str) {
-  let code = shell.exec(str, {async: true}).code;
+  let code = shell.exec(str).code;
   console.warn(str + ': '+ code);
   // console.warn(code);
   if(code){
