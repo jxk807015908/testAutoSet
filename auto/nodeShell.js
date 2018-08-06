@@ -6,7 +6,7 @@ process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
   const chunk = process.stdin.read();
-  if (chunk !== null) {
+  if (/(^beta)?\g.\g.\g/.exec(chunk)) {
     version = chunk;
     process.stdin.emit('end');
 
@@ -38,6 +38,8 @@ process.stdin.on('readable', () => {
     // process.exit(0);
     // console.log(process);
     // process.stdout.write(`data: ${chunk}`);
+  } else {
+    console.error('请输入正确的版本号！！！')
   }
 });
 process.stdin.on('end', () => {
