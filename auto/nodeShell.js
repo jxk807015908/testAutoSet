@@ -68,8 +68,8 @@ process.stdin.on('readable', () => {
 
 function shellExec(str) {
   let code = shell.exec(str).code;
-  console.log(str + ':');
-  console.warn(code);
+  console.warn(str + ': '+ code);
+  // console.warn(code);
   if(code){
     console.log('发布出错！！！！！');
     process.exit(0);
