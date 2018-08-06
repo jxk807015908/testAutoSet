@@ -1,32 +1,15 @@
 const shell = require('shelljs');
-
+shellExec('git checkout master');
+shellExec('git merge dev');
 let version = undefined;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
   const chunk = process.stdin.read();
   if (chunk !== null) {
-    process.stdin.emit('end');
     version = chunk;
-    let _version = version.replace(/^beta/,'');
-    shellExec('git checkout master');
-    shellExec('git merge dev');
-    console.log('开始发布版本v' + version);
+    process.stdin.emit('end');
 
-    shellExec('git add -A');
-    shellExec(`npm version ${_version} --message "[release] ${_version}"`);
-    shellExec('git push origin master');
-    shellExec(`git push origin refs/tags/v${version}`);
-    shellExec('git checkout dev');
-    shellExec('git rebase master');
-    shellExec('git push origin dev');
-    shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
-    if(/^beta/.exec(version)){
-      shellExec('npm publish --tag beta');
-    } else {
-      shellExec('npm publish');
-    }
-    console.log('版本发布成功');
     // console.log("git checkout master:",shell.exec('git checkout master').code);
     // console.log("git merge dev:",shell.exec('git merge dev').code);
 
@@ -52,13 +35,32 @@ process.stdin.on('readable', () => {
 
 
 
-    process.exit(0);
+    // process.exit(0);
     // console.log(process);
     // process.stdout.write(`data: ${chunk}`);
   }
 });
 process.stdin.on('end', () => {
-  process.stdout.write('end');
+  // process.stdout.write('end');
+  let _version = version.replace(/^beta/,'');
+
+  console.log('开始发布版本v' + version);
+
+  shellExec('git add -A');
+  shellExec(`npm version ${_version} --message "[release] ${_version}"`);
+  shellExec('git push origin master');
+  shellExec(`git push origin refs/tags/v${version}`);
+  shellExec('git checkout dev');
+  shellExec('git rebase master');
+  shellExec('git push origin dev');
+  shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
+  if(/^beta/.exec(version)){
+    shellExec('npm publish --tag beta');
+  } else {
+    shellExec('npm publish');
+  }
+  console.log('版本发布成功');
+  process.exit(0);
 });
 // shell.echo('hahahahahhahahahahhahaha');
 // console.log(shell);
