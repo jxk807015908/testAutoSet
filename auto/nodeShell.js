@@ -1,4 +1,7 @@
 const shell = require('shelljs');
+const child_process = require('child_process');
+child_process.exec("npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-group/");
+child_process.exit(0);
 // shellExec('git checkout master');
 // shellExec('git merge dev');
 let version = undefined;
