@@ -56,10 +56,10 @@ process.stdin.on('end', () => {
 });
 
 function shellExec(str, flag, fn) {
-  let res = shell.exec(str,{silent:false});
+  let res = shell.exec(str,{silent:true});
   let code = res.code;
   let stdout = res.stdout;
-  // console.log(str + ': ' + code);
+  console.log(str + ': ' + code);
   // console.warn(code);
   if (code && !flag) {
     console.log('发布出错！！！！！');
