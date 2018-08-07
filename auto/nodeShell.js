@@ -1,4 +1,13 @@
 const shell = require('shelljs');
+const package = require('../package.json');
+const oldVersion = package.version;
+let resetArr = [];
+shellExec('git status', false,(std)=>{
+  if(std.indexOf('modified:') !== -1) {
+    console.error('请先将本地修改的内容提交！！！');
+    process.exit(0);
+  }
+});
 let version = undefined;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
@@ -15,14 +24,23 @@ process.stdin.on('readable', () => {
 process.stdin.on('end', () => {
   let _version = version.replace(/^beta/,'');
   console.log('开始发布版本v' + version);
-  shellExec('git checkout master');
+  shellExec('git checkout master', false, ()=>{
+    resetArr.push(`git checkout dev`)
+  });
   shellExec('git merge dev');
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${_version}"`, true);
-  shellExec(`npm version ${_version} --message "[release] ${_version}"`);
+  shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, ()=>{
+    resetArr.push(`npm version ${oldVersion} --message "[reset] ${oldVersion}"`)
+  });
   shellExec('git push origin master');
-  shellExec(`git push origin refs/tags/v${version}`);
-  shellExec('git checkout dev');
+  shellExec(`git push origin refs/tags/v${_version}`, false, ()=>{
+    resetArr.push(`git push origin :refs/tags/v${_version}`);
+    resetArr.push(`git tag -d v${_version}`)
+  });
+  shellExec('git checkout dev', false, ()=>{
+    resetArr.push(`git checkout master`)
+  });
   shellExec('git rebase master');
   shellExec('git push origin dev');
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
@@ -37,11 +55,22 @@ process.stdin.on('end', () => {
   process.exit(0);
 });
 
-function shellExec(str, flag) {
-  let code = shell.exec(str).code;
-  console.log(str + ': '+ code);
-  if(code && !flag){
+function shellExec(str, flag, fn) {
+  let res = shell.exec(str,{silent:false});
+  let code = res.code;
+  let stdout = res.stdout;
+  // console.log(str + ': ' + code);
+  // console.warn(code);
+  if (code && !flag) {
     console.log('发布出错！！！！！');
+    console.log('正在回退，请勿退出。');
+    reset();
     process.exit(0);
   }
+  fn(stdout);
+}
+function reset(){
+  resetArr.reverse().forEach(str=>{
+    shellExec(str, true)
+  })
 }
