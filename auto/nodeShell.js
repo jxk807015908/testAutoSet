@@ -25,9 +25,11 @@ process.stdin.on('end', () => {
   let _version = version.replace(/^beta/,'');
   console.log('开始发布版本v' + version);
   shellExec('git checkout master', false, ()=>{
-    resetArr.push(`git checkout dev`)
+    resetArr.push(`git checkout dev`);
   });
-  shellExec('git merge dev');
+  shellExec('git merge dev', false, ()=>{
+    resetArr.push(`git merge master`);
+  });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${_version}"`, true);
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, ()=>{
@@ -56,7 +58,7 @@ process.stdin.on('end', () => {
 });
 
 function shellExec(str, flag, fn) {
-  let res = shell.exec(str,{silent:true});
+  let res = shell.exec(str,{silent:false});
   let code = res.code;
   let stdout = res.stdout;
   console.log(str + ': ' + code);
