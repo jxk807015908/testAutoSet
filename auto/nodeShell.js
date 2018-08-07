@@ -8,7 +8,7 @@ process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
   const input = chunk && chunk.replace(/\n$/, '')
   // console.log(chunk.constructor);
-  if (/^(beta)?(\d+.\d+.\d+)$/.test(chunk)) {
+  if (/^(beta)?(\d+.\d+.\d+)$/.test(input)) {
     version = chunk;
     process.stdin.emit('end');
 
@@ -59,9 +59,9 @@ process.stdin.on('end', () => {
   shellExec('git checkout dev');
   shellExec('git rebase master');
   shellExec('git push origin dev');
-  shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
-  shellExec('nrm use own');
-  shellExec('npm config list');
+  // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
+  // shellExec('nrm use own');
+  // shellExec('npm config list');
   if(/^beta/.test(version)){
     shellExec('npm publish --tag beta');
   } else {
