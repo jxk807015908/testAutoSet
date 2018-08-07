@@ -17,7 +17,7 @@
     "npm:own": "npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/",
     "npm:all": "npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-group/",
     "pub4": "node auto/nodeShell.js",
-    "test": "cd auto && 4.sh && node testReg.js"
+    "test": "node auto/testReg.js"
   },
   "dependencies": {},
   "devDependencies": {},
