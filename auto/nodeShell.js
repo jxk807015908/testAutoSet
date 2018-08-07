@@ -2,7 +2,7 @@ const shell = require('shelljs');
 const package = require('../package.json');
 const oldVersion = package.version;
 let resetArr = [];
-shellExec('git status', false,(std)=>{
+shellExec('git status', false, (std)=>{
   if(std.indexOf('modified:') !== -1) {
     console.error('请先将本地修改的内容提交！！！');
     process.exit(0);
@@ -67,7 +67,7 @@ function shellExec(str, flag, fn) {
     reset();
     process.exit(0);
   }
-  fn(stdout);
+  fn && fn(stdout);
 }
 function reset(){
   resetArr.reverse().forEach(str=>{
