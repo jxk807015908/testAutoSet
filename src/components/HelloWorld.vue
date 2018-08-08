@@ -6,6 +6,17 @@
     <p>sadasddas</p>
     <el-input v-if="flag2"></el-input>
     <el-button @click="click">aaaaa</el-button>
+
+
+
+
+    asdasdsa
+    d
+    sa
+    d
+    as
+    d
+    a
   </div>
 </template>
 
