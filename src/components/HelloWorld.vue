@@ -8,7 +8,7 @@
     <el-button @click="click">aaaaa</el-button>
   </div>
 </template>
-
+ffffffff
 <script>
 
 export default {
