@@ -28,12 +28,20 @@ process.stdin.on('end', () => {
     resetArr.push(`git checkout dev`);
   });
   shellExec('git merge dev', false, ()=>{
-    resetArr.push(`git merge master`);
+    // resetArr.push(`git merge master`);
   });
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${_version}"`, true);
+  shellExec(`git commit -m "[build] ${_version}"`, true, (stdout)=>{
+    getHashAndMsg().then((obj)=>{
+      let index = obj.msg.findIndex(`[build] ${_version}`);
+      index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
+    });
+  });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, ()=>{
-    resetArr.push(`npm version ${oldVersion} --message "[reset] ${oldVersion}"`)
+    getHashAndMsg().then((obj)=>{
+      let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
+      index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
+    });
   });
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${_version}`, false, ()=>{
@@ -74,5 +82,18 @@ function shellExec(str, flag, fn) {
 function reset(){
   resetArr.reverse().forEach(str=>{
     shellExec(str, true)
+  })
+}
+
+function getHashAndMsg(){
+  return new Promise(resolve => {
+    shellExec('git log', false, (stdout)=>{
+      let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str=>str.replace(/\n\n/g, '').replace(/^    /, ''));
+      let hash = stdout.match(/[0-9a-f]{40}/g);
+      resolve({
+        msg: msg,
+        hash: hash
+      })
+    })
   })
 }
