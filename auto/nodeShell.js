@@ -95,6 +95,7 @@ function getHashAndMsg(){
     shellExec('git log', false, (stdout)=>{
       let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str=>str.replace(/\n\n/g, '').replace(/^    /, ''));
       let hash = stdout.match(/[0-9a-f]{40}/g);
+      console.error(111111111111111111111111111)
       resolve({
         msg: msg,
         hash: hash
