@@ -34,6 +34,7 @@ process.stdin.on('end', () => {
   shellExec(`git commit -m "[build] ${_version}"`, true, (stdout)=>{
     getHashAndMsg().then((obj)=>{
       let index = obj.msg.findIndex(`[build] ${_version}`);
+      index !== -1 && resetArr.push(`git push origin master --force`);
       index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
     });
   });
@@ -73,13 +74,13 @@ function shellExec(str, flag, fn) {
   // console.warn(code);
   if (code && !flag) {
     console.log('发布出错！！！！！');
-    console.log('正在回退，请勿退出。');
     reset();
     process.exit(0);
   }
-  fn && fn(stdout);
+  code === 0 && fn && fn(stdout);
 }
 function reset(){
+  console.log('正在回退，请勿退出。');
   resetArr.reverse().forEach(str=>{
     shellExec(str, true)
   })
