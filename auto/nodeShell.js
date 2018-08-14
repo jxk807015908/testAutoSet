@@ -38,7 +38,7 @@ process.stdin.on('end', () => {
       index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
     });
   });
-  shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, (stdout)=>{
+  promiseShell(`npm version ${_version} --message "[release] ${_version}"`, false).then((stdout)=>{
     let temp = getHashAndMsg();
     console.log('temp', temp);
     temp.then((obj)=>{
