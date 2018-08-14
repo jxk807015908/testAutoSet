@@ -2,7 +2,7 @@ const shell = require('shelljs');
 // const package = require('../package.json');
 // const oldVersion = package.version;
 let resetArr = [];
-let allBranchLeastCommit = getRemoteBranchHashAndMsg();
+// let allBranchLeastCommit = getRemoteBranchHashAndMsg();
 shellExec('git status', false, (std) => {
   if (std.indexOf('modified:') !== -1) {
     console.error('请先将本地修改的内容提交！！！');
@@ -17,7 +17,7 @@ console.log('请输入版本号:');
 process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
   const input = chunk && chunk.replace(/\n$/, '');
-  if (/^(beta)?(\d+.\d+.\d+)$/.test(input)) {
+  if (/^(\d+.\d+.\d+)(-beta.\d)?$/.test(input)) {
     version = input;
     process.stdin.emit('end');
   } else {
@@ -35,8 +35,9 @@ process.stdin.on('end', () => {
   shellExec('git merge dev', false, () => {
     // resetArr.push(`git merge master`);
   });
+  let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${_version}"`, true, () => {
+  shellExec(`git commit -m "[build] ${version}"`, true, () => {
     // console.error(masterCommitObj);
     // let index = masterCommitObj.msg.findIndex(str=> str === `[build] ${_version}`);
     // index !== -1 && resetArr.push(`git push origin master --force`);
@@ -48,7 +49,7 @@ process.stdin.on('end', () => {
     resetArr.push(`git push origin master --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
-  shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
+  shellExec(`npm version ${version} --message "[release] ${version}"`, false, () => {
     // let obj = getHashAndMsg('master');
     // let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     // console.error('index', index);
@@ -62,9 +63,9 @@ process.stdin.on('end', () => {
     resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
   shellExec('git push origin master');
-  shellExec(`git push origin refs/tags/v${_version}`, false, () => {
-    resetArr.push(`git push origin :refs/tags/v${_version}`);
-    resetArr.push(`git tag -d v${_version}`)
+  shellExec(`git push origin refs/tags/v${version}`, false, () => {
+    resetArr.push(`git push origin :refs/tags/v${version}`);
+    resetArr.push(`git tag -d v${version}`)
   });
   shellExec('git checkout dev', false, () => {
     resetArr.push(`git checkout master`)
@@ -126,23 +127,23 @@ function shellExec(str, flag, fn) {
 
 function reset() {
   console.log('正在回退，请勿退出。');
-  console.log(resetArr);
+  // console.log(resetArr);
   resetArr.reverse().forEach(str => {
     shellExec(str, true)
   })
 }
 
-function getHashAndMsg(branch) {
-  let _branch = branch || '';
-  return shellExec(`git log ${_branch}`, false, (stdout) => {
-    let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str => str.replace(/\n\n/g, '').replace(/^    /, ''));
-    let hash = stdout.match(/[0-9a-f]{40}/g);
-    return {
-      msg: msg,
-      hash: hash
-    };
-  })
-}
+// function getHashAndMsg(branch) {
+//   let _branch = branch || '';
+//   return shellExec(`git log ${_branch}`, false, (stdout) => {
+//     let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str => str.replace(/\n\n/g, '').replace(/^    /, ''));
+//     let hash = stdout.match(/[0-9a-f]{40}/g);
+//     return {
+//       msg: msg,
+//       hash: hash
+//     };
+//   })
+// }
 
 function getRemoteBranchHashAndMsg() {
   return shellExec(`git branch -a -v`, false, (std) => {
