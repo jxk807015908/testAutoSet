@@ -1,6 +1,6 @@
 const shell = require('shelljs');
-const package = require('../package.json');
-const oldVersion = package.version;
+// const package = require('../package.json');
+// const oldVersion = package.version;
 let resetArr = [];
 shellExec('git branch -v', false, (std) => {
   let branchArr = std.split('\n');
