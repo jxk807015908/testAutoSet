@@ -14,6 +14,7 @@ shellExec('git status', false, (std) => {
 });
 let version;
 let masterCommitObj;
+let devCommitObj;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
@@ -32,6 +33,7 @@ process.stdin.on('end', () => {
   shellExec('git checkout master', false, () => {
     resetArr.push(`git checkout dev`);
     masterCommitObj = getHashAndMsg('master');
+    devCommitObj = getHashAndMsg('dev');
   });
   shellExec('git merge dev', false, () => {
     // resetArr.push(`git merge master`);
@@ -67,8 +69,9 @@ process.stdin.on('end', () => {
     let obj = getHashAndMsg('dev');
     let _index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     let index = _index !== -1 ? _index : obj.msg.findIndex(str=> str === `[release] ${_version}`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index + 1]}`);
     index !== -1 && resetArr.push(`git push origin dev --force`);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index + 1]}`);
   });
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   // shellExec('nrm use own');
