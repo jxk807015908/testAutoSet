@@ -2,6 +2,10 @@ const shell = require('shelljs');
 const package = require('../package.json');
 const oldVersion = package.version;
 let resetArr = [];
+shellExec('git branch -v', false, (std) => {
+  let branchArr = std.split('\n');
+  console.log(branchArr);
+});
 shellExec('git status', false, (std) => {
   if (std.indexOf('modified:') !== -1) {
     console.error('请先将本地修改的内容提交！！！');
@@ -32,14 +36,14 @@ process.stdin.on('end', () => {
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${_version}"`, true, () => {
-    let obj = getHashAndMsg();
+    let obj = getHashAndMsg('master');
     console.error(obj);
     let index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     index !== -1 && resetArr.push(`git push origin master --force`);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
-    let obj = getHashAndMsg();
+    let obj = getHashAndMsg('master');
     let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     console.error('index', index);
     index !== -1 && resetArr.push(`git push origin master --force`);
@@ -55,7 +59,7 @@ process.stdin.on('end', () => {
   });
   shellExec('git rebase master');
   shellExec('git push origin dev', false, ()=>{
-    let obj = getHashAndMsg();
+    let obj = getHashAndMsg('dev');
     let _index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     let index = _index !== -1 ? _index : obj.msg.findIndex(str=> str === `[release] ${_version}`);
     index !== -1 && resetArr.push(`git push origin dev --force`);
@@ -111,8 +115,9 @@ function reset() {
   })
 }
 
-function getHashAndMsg() {
-  return shellExec('git log', false, (stdout) => {
+function getHashAndMsg(branch) {
+  let _branch = branch || '';
+  return shellExec(`git log ${_branch}`, false, (stdout) => {
     let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str => str.replace(/\n\n/g, '').replace(/^    /, ''));
     let hash = stdout.match(/[0-9a-f]{40}/g);
     return {
