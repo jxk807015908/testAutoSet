@@ -31,14 +31,14 @@ process.stdin.on('end', () => {
     // resetArr.push(`git merge master`);
   });
   shellExec('git add -A');
-  promiseShell(`git commit -m "[build] ${_version}"`, true).then(()=>{
+  shellExec(`git commit -m "[build] ${_version}"`, true, ()=>{
     getHashAndMsg().then((obj)=>{
       let index = obj.msg.findIndex(`[build] ${_version}`);
       index !== -1 && resetArr.push(`git push origin master --force`);
       index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
     });
   });
-  promiseShell(`npm version ${_version} --message "[release] ${_version}"`, false).then((stdout)=>{
+  promiseShell(`npm version ${_version} --message "[release] ${_version}"`, false).then(()=>{
     let temp = getHashAndMsg();
     console.log('temp', temp);
     temp.then((obj)=>{
