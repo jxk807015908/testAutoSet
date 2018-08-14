@@ -35,6 +35,7 @@ process.stdin.on('readable', () => {
 process.stdin.on('end', () => {
   // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
+  let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   shellExec('git checkout master', false, () => {
     resetArr.push(`git checkout dev`);
     // masterCommitObj = getHashAndMsg('master');
@@ -42,8 +43,9 @@ process.stdin.on('end', () => {
   });
   shellExec('git merge dev', false, () => {
     // resetArr.push(`git merge master`);
+    resetArr.push(`git push origin master --force`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
-  let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${version}"`, true, () => {
     // console.error(masterCommitObj);
@@ -54,8 +56,8 @@ process.stdin.on('end', () => {
     // resetArr.push(`git push origin master --force`);
     // resetArr.push(`git reset --hard ${masterCommitObj.hash[0]}`);
 
-    resetArr.push(`git push origin master --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
+    // resetArr.push(`git push origin master --force`);
+    // resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
   shellExec(`npm version ${version} --message "[release] ${version}"`, false, () => {
     // let obj = getHashAndMsg('master');
@@ -67,8 +69,8 @@ process.stdin.on('end', () => {
     // resetArr.push(`git push origin master --force`);
     // resetArr.push(`git reset --hard ${masterCommitObj.hash[0]}`);
 
-    resetArr.push(`git push origin master --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
+    // resetArr.push(`git push origin master --force`);
+    // resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${version}`, false, () => {
