@@ -51,6 +51,8 @@ process.stdin.on('end', () => {
     // console.error('index', index);
     // index !== -1 && resetArr.push(`git push origin master --force`);
     // index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
+    resetArr.push(`git push origin master --force`);
+    resetArr.push(`git reset --hard ${masterCommitObj.hash[0]}`);
   });
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${_version}`, false, () => {
