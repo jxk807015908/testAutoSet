@@ -34,14 +34,13 @@ process.stdin.on('end', () => {
   shellExec(`git commit -m "[build] ${_version}"`, true, () => {
     let obj = getHashAndMsg();
     console.error(obj);
-    let index = obj.msg.findIndex(`[build] ${_version}`);
+    let index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     index !== -1 && resetArr.push(`git push origin master --force`);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
     let obj = getHashAndMsg();
-    console.error(obj);
-    let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
+    let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     console.error('index', index);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
   });
