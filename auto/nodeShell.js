@@ -40,6 +40,7 @@ process.stdin.on('end', () => {
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
     let obj = getHashAndMsg();
+    console.error(obj);
     let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
     console.error('index', index);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
