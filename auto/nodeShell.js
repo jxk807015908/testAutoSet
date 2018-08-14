@@ -67,13 +67,14 @@ process.stdin.on('end', () => {
 });
 
 function shellExec(str, flag, fn) {
-  let res = shell.exec(str,{silent:false});
+  let res = shell.exec(str,{silent:true});
   let code = res.code;
   let stdout = res.stdout;
   console.log(str + ': ' + code);
   // console.warn(code);
   if (code && !flag) {
-    console.log('发布出错！！！！！');
+    // console.log('发布出错！！！！！');
+    console.log(res.stderr);
     reset();
     process.exit(0);
   }
@@ -81,6 +82,7 @@ function shellExec(str, flag, fn) {
 }
 function reset(){
   console.log('正在回退，请勿退出。');
+  console.log(resetArr);
   resetArr.reverse().forEach(str=>{
     shellExec(str, true)
   })
