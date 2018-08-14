@@ -15,7 +15,7 @@ process.stdin.on('readable', () => {
   let chunk = process.stdin.read();
   const input = chunk && chunk.replace(/\n$/, '');
   if (/^(beta)?(\d+.\d+.\d+)$/.test(input)) {
-    version = chunk;
+    version = input;
     process.stdin.emit('end');
   } else {
     console.error('请输入正确的版本号！！！')
@@ -39,10 +39,10 @@ process.stdin.on('end', () => {
     });
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, (stdout)=>{
-    console.log('stdout', stdout);
     getHashAndMsg().then((obj)=>{
+      console.error('obj', obj);
       let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
-      console.error('index', index)
+      console.error('index', index);
       index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
     });
   });
