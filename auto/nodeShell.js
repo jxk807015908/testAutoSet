@@ -36,13 +36,13 @@ process.stdin.on('end', () => {
     console.error(obj);
     let index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     index !== -1 && resetArr.push(`git push origin master --force`);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
     let obj = getHashAndMsg();
     let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     console.error('index', index);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
   });
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${_version}`, false, () => {
