@@ -9,6 +9,14 @@ shellExec('git status', false, (std) => {
     process.exit(0);
   }
 });
+shellExec('npm config list',false,(stdout)=>{
+  let res = /http:\/\/\S+/i.exec(stdout);
+  let url = res && res.constructor === Array && res[0].split('"')[0];
+  if(url !== 'http://192.168.0.236:8081/repository/djcpsnpm-host/') {
+    console.error('请配置npm地址为"http://192.168.0.236:8081/repository/djcpsnpm-host/"再进行发布');
+    process.exit(0);
+  }
+});
 let version;
 // let masterCommitObj;
 // let devCommitObj;
@@ -25,7 +33,7 @@ process.stdin.on('readable', () => {
   }
 });
 process.stdin.on('end', () => {
-  let _version = version.replace(/^beta/, '');
+  // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
   shellExec('git checkout master', false, () => {
     resetArr.push(`git checkout dev`);
@@ -86,10 +94,10 @@ process.stdin.on('end', () => {
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   // shellExec('nrm use own');
   // shellExec('npm config list');
-  if (/^beta/.test(version)) {
-    shellExec('npm publish --tag beta');
-  } else {
+  if (/^(\d+.\d+.\d+)$/.test(version)) {
     shellExec('npm publish');
+  } else {
+    shellExec('npm publish --tag beta');
   }
   console.log('版本发布成功');
   process.exit(0);
@@ -119,7 +127,7 @@ function shellExec(str, flag, fn) {
   if (code && !flag) {
     // console.log('发布出错！！！！！');
     console.log(res.stderr);
-    reset();
+    resetArr.length !==0 && reset();
     process.exit(0);
   }
   return code === 0 && fn && fn(stdout);
@@ -131,6 +139,7 @@ function reset() {
   resetArr.reverse().forEach(str => {
     shellExec(str, true)
   })
+  console.log('回退完成')
 }
 
 // function getHashAndMsg(branch) {
