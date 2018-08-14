@@ -82,7 +82,7 @@ function promiseShell(str, flag) {
       reset();
       process.exit(0);
     }
-    code === 0 && resolve(stdout);
+    resolve(stdout);
   })
 }
 function shellExec(str, flag, fn) {
