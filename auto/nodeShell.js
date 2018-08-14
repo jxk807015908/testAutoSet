@@ -31,7 +31,7 @@ process.stdin.on('end', () => {
     // resetArr.push(`git merge master`);
   });
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${_version}"`, true, (stdout)=>{
+  promiseShell(`git commit -m "[build] ${_version}"`, true).then(()=>{
     getHashAndMsg().then((obj)=>{
       let index = obj.msg.findIndex(`[build] ${_version}`);
       index !== -1 && resetArr.push(`git push origin master --force`);
@@ -67,7 +67,22 @@ process.stdin.on('end', () => {
   console.log('版本发布成功');
   process.exit(0);
 });
-
+function promiseShell(str, flag) {
+  return new Promise(resolve => {
+    let res = shell.exec(str,{silent:true});
+    let code = res.code;
+    let stdout = res.stdout;
+    console.log(str + ': ' + code);
+    // console.warn(code);
+    if (code && !flag) {
+      // console.log('发布出错！！！！！');
+      console.log(res.stderr);
+      reset();
+      process.exit(0);
+    }
+    code === 0 && resolve(stdout);
+  })
+}
 function shellExec(str, flag, fn) {
   let res = shell.exec(str,{silent:true});
   let code = res.code;
@@ -91,15 +106,12 @@ function reset(){
 }
 
 function getHashAndMsg(){
-  return new Promise(resolve => {
-    shellExec('git log', false, (stdout)=>{
+  return promiseShell('git log', false).then((stdout)=>{
       let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str=>str.replace(/\n\n/g, '').replace(/^    /, ''));
       let hash = stdout.match(/[0-9a-f]{40}/g);
-      console.error(111111111111111111111111111)
-      resolve({
+      return {
         msg: msg,
         hash: hash
-      })
+      };
     })
-  })
 }
