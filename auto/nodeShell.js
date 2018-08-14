@@ -12,7 +12,8 @@ shellExec('git status', false, (std) => {
     process.exit(0);
   }
 });
-let version = undefined;
+let version;
+let masterCommitObj;
 process.stdin.setEncoding('utf8');
 console.log('请输入版本号:');
 process.stdin.on('readable', () => {
@@ -30,24 +31,26 @@ process.stdin.on('end', () => {
   console.log('开始发布版本v' + version);
   shellExec('git checkout master', false, () => {
     resetArr.push(`git checkout dev`);
+    masterCommitObj = getHashAndMsg('master');
   });
   shellExec('git merge dev', false, () => {
     // resetArr.push(`git merge master`);
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${_version}"`, true, () => {
-    let obj = getHashAndMsg('master');
-    console.error(obj);
-    let index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
-    index !== -1 && resetArr.push(`git push origin master --force`);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
+    // console.error(masterCommitObj);
+    // let index = masterCommitObj.msg.findIndex(str=> str === `[build] ${_version}`);
+    // index !== -1 && resetArr.push(`git push origin master --force`);
+    // index !== -1 && resetArr.push(`git reset --hard ${masterCommitObj.hash[index+1]}`);
+    resetArr.push(`git push origin master --force`);
+    resetArr.push(`git reset --hard ${masterCommitObj.hash[0]}`);
   });
   shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
-    let obj = getHashAndMsg('master');
-    let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
-    console.error('index', index);
-    index !== -1 && resetArr.push(`git push origin master --force`);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
+    // let obj = getHashAndMsg('master');
+    // let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
+    // console.error('index', index);
+    // index !== -1 && resetArr.push(`git push origin master --force`);
+    // index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
   });
   shellExec('git push origin master');
   shellExec(`git push origin refs/tags/v${_version}`, false, () => {
