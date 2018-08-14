@@ -42,6 +42,7 @@ process.stdin.on('end', () => {
     let obj = getHashAndMsg();
     let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     console.error('index', index);
+    index !== -1 && resetArr.push(`git push origin master --force`);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
   });
   shellExec('git push origin master');
@@ -53,7 +54,13 @@ process.stdin.on('end', () => {
     resetArr.push(`git checkout master`)
   });
   shellExec('git rebase master');
-  shellExec('git push origin dev');
+  shellExec('git push origin dev', false, ()=>{
+    let obj = getHashAndMsg();
+    let _index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
+    let index = _index !== -1 ? _index : obj.msg.findIndex(str=> str === `[release] ${_version}`);
+    index !== -1 && resetArr.push(`git push origin dev --force`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index+1]}`);
+  });
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   // shellExec('nrm use own');
   // shellExec('npm config list');
