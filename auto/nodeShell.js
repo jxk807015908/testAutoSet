@@ -69,7 +69,7 @@ process.stdin.on('end', () => {
     let obj = getHashAndMsg('dev');
     let _index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     let index = _index !== -1 ? _index : obj.msg.findIndex(str=> str === `[release] ${_version}`);
-    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index + 1]}`);
+    // index !== -1 && resetArr.push(`git reset --hard ${devCommitObj.hash[index + 0]}`);
     index !== -1 && resetArr.push(`git push origin dev --force`);
     index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index + 1]}`);
   });
