@@ -2,8 +2,8 @@ const shell = require('shelljs');
 const package = require('../package.json');
 const oldVersion = package.version;
 let resetArr = [];
-shellExec('git status', false, (std)=>{
-  if(std.indexOf('modified:') !== -1) {
+shellExec('git status', false, (std) => {
+  if (std.indexOf('modified:') !== -1) {
     console.error('请先将本地修改的内容提交！！！');
     process.exit(0);
   }
@@ -22,38 +22,33 @@ process.stdin.on('readable', () => {
   }
 });
 process.stdin.on('end', () => {
-  let _version = version.replace(/^beta/,'');
+  let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
-  shellExec('git checkout master', false, ()=>{
+  shellExec('git checkout master', false, () => {
     resetArr.push(`git checkout dev`);
   });
-  shellExec('git merge dev', false, ()=>{
+  shellExec('git merge dev', false, () => {
     // resetArr.push(`git merge master`);
   });
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${_version}"`, true, ()=>{
-    getHashAndMsg().then((obj)=>{
-      let index = obj.msg.findIndex(`[build] ${_version}`);
-      index !== -1 && resetArr.push(`git push origin master --force`);
-      index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
-    });
+  shellExec(`git commit -m "[build] ${_version}"`, true, () => {
+    let obj = getHashAndMsg();
+    let index = obj.msg.findIndex(`[build] ${_version}`);
+    index !== -1 && resetArr.push(`git push origin master --force`);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
   });
-  promiseShell(`npm version ${_version} --message "[release] ${_version}"`, false).then(()=>{
-    let temp = getHashAndMsg();
-    console.log('temp', temp);
-    temp.then((obj)=>{
-      console.error('obj', obj);
-      let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
-      console.error('index', index);
-      index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
-    });
+  shellExec(`npm version ${_version} --message "[release] ${_version}"`, false, () => {
+    let obj = getHashAndMsg();
+    let index = obj.msg.findIndex(`[reset] ${oldVersion}`);
+    console.error('index', index);
+    index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index]}`);
   });
   shellExec('git push origin master');
-  shellExec(`git push origin refs/tags/v${_version}`, false, ()=>{
+  shellExec(`git push origin refs/tags/v${_version}`, false, () => {
     resetArr.push(`git push origin :refs/tags/v${_version}`);
     resetArr.push(`git tag -d v${_version}`)
   });
-  shellExec('git checkout dev', false, ()=>{
+  shellExec('git checkout dev', false, () => {
     resetArr.push(`git checkout master`)
   });
   shellExec('git rebase master');
@@ -61,7 +56,7 @@ process.stdin.on('end', () => {
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   // shellExec('nrm use own');
   // shellExec('npm config list');
-  if(/^beta/.test(version)){
+  if (/^beta/.test(version)) {
     shellExec('npm publish --tag beta');
   } else {
     shellExec('npm publish');
@@ -69,24 +64,24 @@ process.stdin.on('end', () => {
   console.log('版本发布成功');
   process.exit(0);
 });
-function promiseShell(str, flag) {
-  return new Promise(resolve => {
-    let res = shell.exec(str,{silent:true});
-    let code = res.code;
-    let stdout = res.stdout;
-    console.log(str + ': ' + code);
-    // console.warn(code);
-    if (code && !flag) {
-      // console.log('发布出错！！！！！');
-      console.log(res.stderr);
-      reset();
-      process.exit(0);
-    }
-    resolve(stdout);
-  })
-}
+// function promiseShell(str, flag) {
+//   return new Promise(resolve => {
+//     let res = shell.exec(str,{silent:true});
+//     let code = res.code;
+//     let stdout = res.stdout;
+//     console.log(str + ': ' + code);
+//     // console.warn(code);
+//     if (code && !flag) {
+//       // console.log('发布出错！！！！！');
+//       console.log(res.stderr);
+//       reset();
+//       process.exit(0);
+//     }
+//     resolve(stdout);
+//   })
+// }
 function shellExec(str, flag, fn) {
-  let res = shell.exec(str,{silent:true});
+  let res = shell.exec(str, {silent: true});
   let code = res.code;
   let stdout = res.stdout;
   console.log(str + ': ' + code);
@@ -97,23 +92,24 @@ function shellExec(str, flag, fn) {
     reset();
     process.exit(0);
   }
-  code === 0 && fn && fn(stdout);
+  return code === 0 && fn && fn(stdout);
 }
-function reset(){
+
+function reset() {
   console.log('正在回退，请勿退出。');
   console.log(resetArr);
-  resetArr.reverse().forEach(str=>{
+  resetArr.reverse().forEach(str => {
     shellExec(str, true)
   })
 }
 
-function getHashAndMsg(){
-  return promiseShell('git log', false).then((stdout)=>{
-      let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str=>str.replace(/\n\n/g, '').replace(/^    /, ''));
-      let hash = stdout.match(/[0-9a-f]{40}/g);
-      return {
-        msg: msg,
-        hash: hash
-      };
-    })
+function getHashAndMsg() {
+  return shellExec('git log', false, (stdout) => {
+    let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str => str.replace(/\n\n/g, '').replace(/^    /, ''));
+    let hash = stdout.match(/[0-9a-f]{40}/g);
+    return {
+      msg: msg,
+      hash: hash
+    };
+  })
 }
