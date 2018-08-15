@@ -183,7 +183,7 @@ function getRemoteBranchHashAndMsg() {
 function getObjValue(obj,reg) {
   let regExp = new RegExp(reg);
   let arr = [];
-  obj.keys().forEach(str=>{
+  Object.keys(obj).forEach(str=>{
     regExp.test(str) && arr.push(str);
   });
   return arr;
