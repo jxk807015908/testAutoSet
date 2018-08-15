@@ -37,8 +37,8 @@ process.stdin.on('end', () => {
   // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
   let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-  console.error(getObjValue(allBranchLeastCommit,'/remotes\/\\S+\/master/'));
-  console.error(getObjValue(allBranchLeastCommit,'/remotes\/\\S+\/dev/'));
+  console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/master'));
+  console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/dev'));
   shellExec('git checkout master', {}, () => {
     resetArr.push(`git checkout dev`);
     // masterCommitObj = getHashAndMsg('master');
