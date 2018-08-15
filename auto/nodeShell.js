@@ -173,6 +173,7 @@ function getRemoteBranchHashAndMsg() {
       // console.log(name)
       // console.log(hash)
     });
+    console.log(hashObj);
     return hashObj;
   })
 }
