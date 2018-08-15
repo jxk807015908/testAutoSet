@@ -18,7 +18,7 @@ function nodeShell(str, option, fn, errFn) {
     console.log(res.stderr);
     return errFn && errFn();
     // resetArr.length !==0 && reset();
-    process.exit(0);
+    // process.exit(0);
   }
   return code === 0 && fn && fn(stdout);
 }
