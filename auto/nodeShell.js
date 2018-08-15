@@ -1,15 +1,16 @@
-const shell = require('shelljs');
+// const shell = require('shelljs');
+const nodeShell = require('./util/nodeShell');
 // const package = require('../package.json');
 // const oldVersion = package.version;
 let resetArr = [];
 // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-shellExec('git status', false, (std) => {
+shellExec('git status', {}, (std) => {
   if (std.indexOf('modified:') !== -1) {
     console.error('请先将本地修改的内容提交！！！');
     process.exit(0);
   }
 });
-shellExec('npm config list',false,(stdout)=>{
+shellExec('npm config list',{},(stdout)=>{
   let res = /http:\/\/\S+/i.exec(stdout);
   let url = res && res.constructor === Array && res[0].split('"')[0];
   if(url !== 'http://192.168.0.236:8081/repository/djcpsnpm-host/') {
@@ -36,18 +37,18 @@ process.stdin.on('end', () => {
   // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
   let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-  shellExec('git checkout master', false, () => {
+  shellExec('git checkout master', {}, () => {
     resetArr.push(`git checkout dev`);
     // masterCommitObj = getHashAndMsg('master');
     // devCommitObj = getHashAndMsg('dev');
   });
-  shellExec('git merge dev', false, () => {
+  shellExec('git merge dev', {}, () => {
     // resetArr.push(`git merge master`);
     resetArr.push(`git push origin master --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
   shellExec('git add -A');
-  shellExec(`git commit -m "[build] ${version}"`, true, () => {
+  shellExec(`git commit -m "[build] ${version}"`, {ignoreErr:true}, () => {
     // console.error(masterCommitObj);
     // let index = masterCommitObj.msg.findIndex(str=> str === `[build] ${_version}`);
     // index !== -1 && resetArr.push(`git push origin master --force`);
@@ -59,7 +60,7 @@ process.stdin.on('end', () => {
     // resetArr.push(`git push origin master --force`);
     // resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
-  shellExec(`npm version ${version} --message "[release] ${version}"`, false, () => {
+  shellExec(`npm version ${version} --message "[release] ${version}"`, {}, () => {
     // let obj = getHashAndMsg('master');
     // let index = obj.msg.findIndex(str=> str === `[release] ${_version}`);
     // console.error('index', index);
@@ -73,15 +74,15 @@ process.stdin.on('end', () => {
     // resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
   });
   shellExec('git push origin master');
-  shellExec(`git push origin refs/tags/v${version}`, false, () => {
+  shellExec(`git push origin refs/tags/v${version}`, {}, () => {
     resetArr.push(`git push origin :refs/tags/v${version}`);
     resetArr.push(`git tag -d v${version}`)
   });
-  shellExec('git checkout dev', false, () => {
+  shellExec('git checkout dev', {}, () => {
     resetArr.push(`git checkout master`)
   });
   shellExec('git rebase master');
-  shellExec('git push origin dev', false, ()=>{
+  shellExec('git push origin dev', {}, ()=>{
     // let obj = getHashAndMsg('dev');
     // let _index = obj.msg.findIndex(str=> str === `[build] ${_version}`);
     // let index = _index !== -1 ? _index : obj.msg.findIndex(str=> str === `[release] ${_version}`);
@@ -120,27 +121,32 @@ process.stdin.on('end', () => {
 //     resolve(stdout);
 //   })
 // }
-function shellExec(str, flag, fn) {
-  let res = shell.exec(str, {silent: true});
-  let code = res.code;
-  let stdout = res.stdout;
-  console.log(str + ': ' + code);
-  // console.warn(code);
-  if (code && !flag) {
-    // console.log('发布出错！！！！！');
-    console.log(res.stderr);
+function shellExec(str, option, fn) {
+  nodeShell(str,option,fn,()=>{
     resetArr.length !==0 && reset();
-    process.exit(0);
-  }
-  return code === 0 && fn && fn(stdout);
+  })
 }
+// function shellExec(str, flag, fn) {
+//   let res = shell.exec(str, {silent: true});
+//   let code = res.code;
+//   let stdout = res.stdout;
+//   console.log(str + ': ' + code);
+//   // console.warn(code);
+//   if (code && !flag) {
+//     // console.log('发布出错！！！！！');
+//     console.log(res.stderr);
+//     resetArr.length !==0 && reset();
+//     process.exit(0);
+//   }
+//   return code === 0 && fn && fn(stdout);
+// }
 
 function reset() {
   console.log('正在回退，请勿退出。');
   // console.log(resetArr);
   resetArr.reverse().forEach(str => {
-    shellExec(str, true)
-  })
+    shellExec(str, {ignoreErr: true})
+  });
   console.log('回退完成')
 }
 
@@ -157,7 +163,7 @@ function reset() {
 // }
 
 function getRemoteBranchHashAndMsg() {
-  return shellExec(`git branch -a -v`, false, (std) => {
+  return shellExec(`git branch -a -v`, {}, (std) => {
     let branchArr = std.split('\n');
     let hashObj = {};
     branchArr.map(str=>{

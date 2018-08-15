@@ -1,9 +1,10 @@
-const shell = require('shelljs');
+// const shell = require('shelljs');
+const nodeShell = require('./util/nodeShell');
 // shellExec('git log');
 getHashAndMsg();
 function getHashAndMsg(){
   return new Promise(resolve => {
-    shellExec('git log', false, (stdout)=>{
+    nodeShell('git log', {}, (stdout)=>{
       let msg = stdout.match(/\n\n   [ \S]+\n\n/g).map(str=>str.replace(/\n\n/g, '').replace(/^    /, ''));
       let hash = stdout.match(/[0-9a-f]{40}/g);
       resolve({
@@ -23,17 +24,17 @@ function getHashAndMsg(){
 process.exit(0);
 
 
-function shellExec(str, flag, fn) {
-  let res = shell.exec(str,{silent:true});
-  let code = res.code;
-  let stdout = res.stdout;
-  // console.log(res);
-  // console.log(str + ': ' + code);
-  // console.warn(code);
-  if (code && !flag) {
-    console.log(res.stderr);
-    console.log('发布出错！！！！！');
-    process.exit(0);
-  }
-  fn && fn(stdout);
-}
+// function shellExec(str, flag, fn) {
+//   let res = shell.exec(str,{silent:true});
+//   let code = res.code;
+//   let stdout = res.stdout;
+//   // console.log(res);
+//   // console.log(str + ': ' + code);
+//   // console.warn(code);
+//   if (code && !flag) {
+//     console.log(res.stderr);
+//     console.log('发布出错！！！！！');
+//     process.exit(0);
+//   }
+//   fn && fn(stdout);
+// }
