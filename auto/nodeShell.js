@@ -37,6 +37,8 @@ process.stdin.on('end', () => {
   // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
   let allBranchLeastCommit = getRemoteBranchHashAndMsg();
+  console.error(getObjValue(allBranchLeastCommit,'/remotes\/\S+\/master/'));
+  console.error(getObjValue(allBranchLeastCommit,'/remotes\/\S+\/dev/'));
   shellExec('git checkout master', {}, () => {
     resetArr.push(`git checkout dev`);
     // masterCommitObj = getHashAndMsg('master');
@@ -166,7 +168,6 @@ function getRemoteBranchHashAndMsg() {
   return shellExec(`git branch -a -v`, {}, (std) => {
     let branchArr = std.split('\n');
     let hashObj = {};
-    console.error(std);
     branchArr.map(str=>{
       let name = /[\S]+/.exec(str.replace(/^[*| ] /, ''));
       let hash = /[0-9a-f]{7}/.exec(str);
@@ -182,5 +183,8 @@ function getRemoteBranchHashAndMsg() {
 function getObjValue(obj,reg) {
   let regExp = new RegExp(reg);
   let arr = [];
-
+  obj.keys().forEach(str=>{
+    regExp.test(str) && arr.push(str);
+  });
+  return arr;
 }
