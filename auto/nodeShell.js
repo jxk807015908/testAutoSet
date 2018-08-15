@@ -37,8 +37,11 @@ process.stdin.on('end', () => {
   // let _version = version.replace(/^beta/, '');
   console.log('开始发布版本v' + version);
   let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-  console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/master'));
-  console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/dev'));
+  let remoteMasterName = getObjValue(allBranchLeastCommit,'remotes\/\\S+\/master')[0];
+  let remoteDevName = getObjValue(allBranchLeastCommit,'remotes\/\\S+\/dev')[0];
+  let localDevName = getObjValue(allBranchLeastCommit,'dev')[0];
+  // console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/master'));
+  // console.error(getObjValue(allBranchLeastCommit,'remotes\/\\S+\/dev'));
   shellExec('git checkout master', {}, () => {
     resetArr.push(`git checkout dev`);
     // masterCommitObj = getHashAndMsg('master');
@@ -47,7 +50,8 @@ process.stdin.on('end', () => {
   shellExec('git merge dev', {}, () => {
     // resetArr.push(`git merge master`);
     resetArr.push(`git push origin master --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
+    // resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/master']}`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteMasterName]}`);
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${version}"`, {ignoreErr:true}, () => {
@@ -92,9 +96,9 @@ process.stdin.on('end', () => {
     // index !== -1 && resetArr.push(`git push origin dev --force`);
     // index !== -1 && resetArr.push(`git reset --hard ${obj.hash[index + 1]}`);
 
-    resetArr.push(`git reset --hard ${allBranchLeastCommit['dev']}`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[localDevName]}`);
     resetArr.push(`git push origin dev --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit['remotes/origin/dev']}`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteDevName]}`);
   });
   // shellExec('npm config set registry http://192.168.0.236:8081/repository/djcpsnpm-host/');
   // shellExec('nrm use own');
