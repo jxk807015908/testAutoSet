@@ -10,14 +10,14 @@ shellExec('git status', {}, (std) => {
     process.exit(0);
   }
 });
-shellExec('npm config list',{},(stdout)=>{
-  let res = /http:\/\/\S+/i.exec(stdout);
-  let url = res && res.constructor === Array && res[0].split('"')[0];
-  if(url !== 'http://192.168.0.236:8081/repository/djcpsnpm-host/') {
-    console.error('请配置npm地址为"http://192.168.0.236:8081/repository/djcpsnpm-host/"再进行发布');
-    process.exit(0);
-  }
-});
+// shellExec('npm config list',{},(stdout)=>{
+//   let res = /http:\/\/\S+/i.exec(stdout);
+//   let url = res && res.constructor === Array && res[0].split('"')[0];
+//   if(url !== 'http://192.168.0.236:8081/repository/djcpsnpm-host/') {
+//     console.error('请配置npm地址为"http://192.168.0.236:8081/repository/djcpsnpm-host/"再进行发布');
+//     process.exit(0);
+//   }
+// });
 let version;
 // let masterCommitObj;
 // let devCommitObj;
