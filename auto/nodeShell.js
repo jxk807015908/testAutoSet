@@ -122,7 +122,7 @@ process.stdin.on('end', () => {
 //   })
 // }
 function shellExec(str, option, fn) {
-  nodeShell(str,option,fn,()=>{
+  return nodeShell(str,option,fn,()=>{
     resetArr.length !==0 && reset();
   })
 }
@@ -166,6 +166,7 @@ function getRemoteBranchHashAndMsg() {
   return shellExec(`git branch -a -v`, {}, (std) => {
     let branchArr = std.split('\n');
     let hashObj = {};
+    console.error(std);
     branchArr.map(str=>{
       let name = /[\S]+/.exec(str.replace(/^[*| ] /, ''));
       let hash = /[0-9a-f]{7}/.exec(str);
@@ -176,4 +177,10 @@ function getRemoteBranchHashAndMsg() {
     console.log(hashObj);
     return hashObj;
   })
+}
+
+function getObjValue(obj,reg) {
+  let regExp = new RegExp(reg);
+  let arr = [];
+
 }
