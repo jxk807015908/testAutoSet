@@ -1,11 +1,19 @@
 const nodeShell = require('./util/nodeShell');
 let resetArr = [];
-// shellExec('git status', {}, (std) => {
-//   if (std.indexOf('modified:') !== -1) {
-//     console.error('请先将本地修改的内容提交！！！');
-//     process.exit(0);
-//   }
-// });
+shellExec('git status', {}, (std) => {
+  if (std.indexOf('modified:') !== -1) {
+    console.error('请先将本地修改的内容提交！！！');
+    process.exit(0);
+  }
+});
+shellExec('npm config list',{},(stdout)=>{
+  let res = /http:\/\/\S+/i.exec(stdout);
+  let url = res && res.constructor === Array && res[0].split('"')[0];
+  if(url !== 'http://192.168.0.236:8081/repository/djcpsnpm-host/') {
+    console.error('请配置npm地址为"http://192.168.0.236:8081/repository/djcpsnpm-host/"再进行发布');
+    process.exit(0);
+  }
+});
 let version;
 let branchName;
 let _branchName;
@@ -49,14 +57,14 @@ process.stdin.on('end', () => {
 function release() {
   const remoteBranchName = localToRemote[branchName]; //无前缀:remotes/origin
   const localMasterBranchName = remoteToLocal['master']; //无前缀:remotes/origin
-  if(!localMasterBranchName || !remoteBranchName) {
+  let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
+  let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${remoteBranchName}`)[0];
+  if(!localMasterBranchName || !remoteBranchName || !remoteMasterName || !remoteBranchNameHaveBehand) {
     console.error('找不到分支');
     process.exit(0);
   }
   console.log('开始发布版本v' + version);
   // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-  let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
-  let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${remoteBranchName}`)[0];
   // let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
   shellExec(`git checkout ${localMasterBranchName}`, {}, () => {
     resetArr.push(`git checkout ${branchName}`);
