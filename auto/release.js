@@ -49,22 +49,26 @@ process.stdin.on('end', () => {
 function release() {
   const remoteBranchName = localToRemote[branchName]; //有前缀:remotes/
   const localMasterBranchName = remoteToLocal['master']; //有前缀:remotes/
+  if(localMasterBranchName && remoteBranchName) {
+    console.error('找不到分支');
+    process.exit(0);
+  }
   console.log('开始发布版本v' + version);
   // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
-  // let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
+  let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
   // let remoteDevName = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
   // let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
   shellExec(`git checkout ${localMasterBranchName}`, {}, () => {
     resetArr.push(`git checkout ${branchName}`);
   });
   shellExec(`git merge ${branchName}`, {}, () => {
-    resetArr.push(`git push origin ${localMasterBranchName} --force`);
+    resetArr.push(`git push origin ${localMasterBranchName}:master --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteMasterName]}`);
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${version}"`, {ignoreErr: true});
   shellExec(`npm version ${version} --message "[release] ${version}"`);
-  shellExec(`git push origin ${localMasterBranchName}`);
+  shellExec(`git push origin ${localMasterBranchName}:master`);
   shellExec(`git push origin refs/tags/v${version}`, {}, () => {
     resetArr.push(`git push origin :refs/tags/v${version}`);
     resetArr.push(`git tag -d v${version}`);
@@ -73,11 +77,16 @@ function release() {
     resetArr.push(`git checkout ${localMasterBranchName}`);
   });
   shellExec(`git rebase ${localMasterBranchName}`);
-  shellExec(`git push origin ${branchName}`, {}, ()=>{
+  shellExec(`git push origin ${branchName}:${remoteBranchName}`, {}, ()=>{
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
     resetArr.push(`git push origin ${branchName} --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
   });
+  if (/^(\d+.\d+.\d+)$/.test(version)) {
+    shellExec('npm publish');
+  } else {
+    shellExec('npm publish --tag beta');
+  }
   console.log('版本发布成功');
   process.exit(0);
 }
