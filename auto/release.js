@@ -12,7 +12,7 @@ let _branchName;
 let relative = getRelative();
 const localToRemote = relative.localToRemote;
 const remoteToLocal = relative.remoteToLocal;
-console.log(remoteToLocal);
+// console.log(localToRemote);
 let allBranchLeastCommit = getAllBranchHashAndMsg();
 process.stdin.setEncoding('utf8');
 console.log('请输入你要发布的本地分支:');
@@ -49,7 +49,7 @@ process.stdin.on('end', () => {
 function release() {
   const remoteBranchName = localToRemote[branchName]; //有前缀:remotes/
   const localMasterBranchName = remoteToLocal['master']; //有前缀:remotes/
-  if(localMasterBranchName && remoteBranchName) {
+  if(!localMasterBranchName && !remoteBranchName) {
     console.error('找不到分支');
     process.exit(0);
   }
@@ -143,7 +143,7 @@ function getRelative() {
       let _remote = /\[\S+\/\S+\]/.exec(str_noCommit);
       let remote = _remote && ('remotes/' + _remote[0].replace('[', '').replace(']', ''));
       // console.log(remote)
-      localToRemote[name] = remote;
+      localToRemote[name] = _remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '');
       remoteToLocal[_remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '')] = name;
       // console.log(name)
       // console.log(hash)
