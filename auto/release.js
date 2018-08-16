@@ -1,4 +1,5 @@
 const nodeShell = require('./util/nodeShell');
+const origin = 'https://github.com/jxk807015908/testAutoSet.git';
 let resetArr = [];
 shellExec('git status', {}, (std) => {
   if (std.indexOf('modified:') !== -1) {
@@ -55,8 +56,8 @@ process.stdin.on('end', () => {
 });
 
 function release() {
-  const remoteBranchName = localToRemote[branchName]; //无前缀:remotes/origin
-  const localMasterBranchName = remoteToLocal['master']; //无前缀:remotes/origin
+  const remoteBranchName = localToRemote[branchName]; //无前缀:remotes/${origin}
+  const localMasterBranchName = remoteToLocal['master']; //无前缀:remotes/${origin}
   let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
   let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${remoteBranchName}`)[0];
   if(!localMasterBranchName || !remoteBranchName || !remoteMasterName || !remoteBranchNameHaveBehand) {
@@ -70,24 +71,24 @@ function release() {
     resetArr.push(`git checkout ${branchName}`);
   });
   shellExec(`git merge ${branchName}`, {}, () => {
-    resetArr.push(`git push origin ${localMasterBranchName}:master --force`);
+    resetArr.push(`git push ${origin} ${localMasterBranchName}:master --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteMasterName]}`);
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${version}"`, {ignoreErr: true});
   shellExec(`npm version ${version} --message "[release] ${version}"`);
-  shellExec(`git push origin ${localMasterBranchName}:master`);
-  shellExec(`git push origin refs/tags/v${version}`, {}, () => {
-    resetArr.push(`git push origin :refs/tags/v${version}`);
+  shellExec(`git push ${origin} ${localMasterBranchName}:master`);
+  shellExec(`git push ${origin} refs/tags/v${version}`, {}, () => {
+    resetArr.push(`git push ${origin} :refs/tags/v${version}`);
     resetArr.push(`git tag -d v${version}`);
   });
   shellExec(`git checkout ${branchName}`, {}, () => {
     resetArr.push(`git checkout ${localMasterBranchName}`);
   });
   shellExec(`git rebase ${localMasterBranchName}`);
-  shellExec(`git push origin ${branchName}:${remoteBranchName}`, {}, ()=>{
+  shellExec(`git push ${origin} ${branchName}:${remoteBranchName}`, {}, ()=>{
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
-    resetArr.push(`git push origin ${branchName}:${remoteBranchName} --force`);
+    resetArr.push(`git push ${origin} ${branchName}:${remoteBranchName} --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteBranchNameHaveBehand]}`);
   });
   if (/^(\d+.\d+.\d+)$/.test(version)) {

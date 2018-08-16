@@ -2,8 +2,7 @@ const shell = require('shelljs');
 const DEFAULT_OPTION = {
   silent: true,
   codeMsg: true,
-  ignoreErr: false,
-
+  ignoreErr: false
 };
 
 function nodeShell(str, option, fn, errFn) {
