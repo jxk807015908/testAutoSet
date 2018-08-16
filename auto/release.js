@@ -82,6 +82,11 @@ function release() {
     resetArr.push(`git push origin ${branchName} --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
   });
+  if (/^(\d+.\d+.\d+)$/.test(version)) {
+    shellExec('npm publish');
+  } else {
+    shellExec('npm publish --tag beta');
+  }
   console.log('版本发布成功');
   process.exit(0);
 }
