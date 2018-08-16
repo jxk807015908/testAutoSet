@@ -23,7 +23,7 @@ process.stdin.on('readable', () => {
     _branchName = input;
     process.stdin.emit('end');
   } else {
-    if (/^(\d+.\d+.\d+)(-beta.\d)?$/.test(input)) {
+    if (/^(\d+.\d+.\d+)(-beta.\d+)?$/.test(input)) {
       version = input;
       process.stdin.emit('end');
     } else {
