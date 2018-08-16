@@ -49,7 +49,7 @@ process.stdin.on('end', () => {
 function release() {
   const remoteBranchName = localToRemote[branchName]; //有前缀:remotes/
   const localMasterBranchName = remoteToLocal['master']; //有前缀:remotes/
-  if(!localMasterBranchName && !remoteBranchName) {
+  if(!localMasterBranchName || !remoteBranchName) {
     console.error('找不到分支');
     process.exit(0);
   }
