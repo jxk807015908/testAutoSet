@@ -79,7 +79,7 @@ function release() {
   shellExec(`git rebase ${localMasterBranchName}`);
   shellExec(`git push origin ${branchName}:${remoteBranchName}`, {}, ()=>{
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
-    resetArr.push(`git push origin ${branchName} --force`);
+    resetArr.push(`git push origin ${branchName}:${remoteBranchName} --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteBranchNameHaveBehand]}`);
   });
   if (/^(\d+.\d+.\d+)$/.test(version)) {
