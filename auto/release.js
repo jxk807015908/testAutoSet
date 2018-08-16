@@ -56,7 +56,7 @@ function release() {
   console.log('开始发布版本v' + version);
   // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
-  let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
+  let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${remoteBranchName}`)[0];
   // let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
   shellExec(`git checkout ${localMasterBranchName}`, {}, () => {
     resetArr.push(`git checkout ${branchName}`);
