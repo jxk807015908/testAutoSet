@@ -143,11 +143,15 @@ function getRelative() {
         let res = /\n\n[\s\S]+\n\n/.exec(std)[0].replace(/\n\n/g, '').replace(/^ +/, '');
         str_noCommit = str.replace(res, '');
       });
-      let _remote = /\[\S+\/\S+\]/.exec(str_noCommit);
-      let remote = _remote && ('remotes/' + _remote[0].replace('[', '').replace(']', ''));
+      // console.error(str_noCommit);
+      let _remote = /\[\S+\/\S+(:[\s\S]+)?\]/.exec(str_noCommit);
+      let remote = _remote && _remote[0].replace('[', '').replace(']', '').replace(/:[\s\S]+/, '');
+      // let remote = _remote && ('remotes/' + _remote[0].replace('[', '').replace(']', ''));
       // console.log(remote)
-      localToRemote[name] = _remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '');
-      remoteToLocal[_remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '')] = name;
+      localToRemote[name] = remote;
+      remoteToLocal[remote] = name;
+      // localToRemote[name] = _remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '');
+      // remoteToLocal[_remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '')] = name;
       // console.log(name)
       // console.log(hash)
     });
