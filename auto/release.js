@@ -145,7 +145,7 @@ function getRelative() {
       });
       // console.error(str_noCommit);
       let _remote = /\[\S+\/\S+(:[\s\S]+)?\]/.exec(str_noCommit);
-      let remote = _remote && _remote[0].replace('[', '').replace(']', '').replace(/:[\s\S]+/, '');
+      let remote = _remote && _remote[0].replace('[', '').replace(']', '').replace(/:[\s\S]+/, '').replace(/^\S+\//, '');
       // let remote = _remote && ('remotes/' + _remote[0].replace('[', '').replace(']', ''));
       // console.log(remote)
       localToRemote[name] = remote;
