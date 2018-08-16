@@ -9,7 +9,11 @@ let resetArr = [];
 let version;
 let branchName;
 let _branchName;
-let allBranchLeastCommit = getRemoteBranchHashAndMsg();
+let relative = getRelative();
+const localToRemote = relative.localToRemote;
+const remoteToLocal = relative.remoteToLocal;
+console.log(remoteToLocal);
+let allBranchLeastCommit = getAllBranchHashAndMsg();
 process.stdin.setEncoding('utf8');
 console.log('请输入你要发布的本地分支:');
 process.stdin.on('readable', () => {
@@ -43,34 +47,40 @@ process.stdin.on('end', () => {
 });
 
 function release() {
+  const remoteBranchName = localToRemote[branchName]; //有前缀:remotes/
+  const localMasterBranchName = remoteToLocal['master']; //有前缀:remotes/
+  if(localMasterBranchName && remoteBranchName) {
+    console.error('找不到分支');
+    process.exit(0);
+  }
   console.log('开始发布版本v' + version);
   // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
-  let remoteDevName = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
-  let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
-  shellExec('git checkout master', {}, () => {
+  // let remoteDevName = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
+  // let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
+  shellExec(`git checkout ${localMasterBranchName}`, {}, () => {
     resetArr.push(`git checkout ${branchName}`);
   });
   shellExec(`git merge ${branchName}`, {}, () => {
-    resetArr.push(`git push origin master --force`);
+    resetArr.push(`git push origin ${localMasterBranchName}:master --force`);
     resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteMasterName]}`);
   });
   shellExec('git add -A');
   shellExec(`git commit -m "[build] ${version}"`, {ignoreErr: true});
   shellExec(`npm version ${version} --message "[release] ${version}"`);
-  shellExec('git push origin master');
+  shellExec(`git push origin ${localMasterBranchName}:master`);
   shellExec(`git push origin refs/tags/v${version}`, {}, () => {
     resetArr.push(`git push origin :refs/tags/v${version}`);
     resetArr.push(`git tag -d v${version}`);
   });
   shellExec(`git checkout ${branchName}`, {}, () => {
-    resetArr.push(`git checkout master`);
+    resetArr.push(`git checkout ${localMasterBranchName}`);
   });
-  shellExec('git rebase master');
-  shellExec(`git push origin ${branchName}`, {}, ()=>{
-    resetArr.push(`git reset --hard ${allBranchLeastCommit[localDevName]}`);
+  shellExec(`git rebase ${localMasterBranchName}`);
+  shellExec(`git push origin ${branchName}:${remoteBranchName}`, {}, ()=>{
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
     resetArr.push(`git push origin ${branchName} --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteDevName]}`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
   });
   console.log('版本发布成功');
   process.exit(0);
@@ -92,7 +102,7 @@ function reset() {
   console.log('回退完成');
 }
 
-function getRemoteBranchHashAndMsg() {
+function getAllBranchHashAndMsg() {
   return shellExec(`git branch -a -v`, {}, (std) => {
     let branchArr = std.split('\n');
     let hashObj = {};
@@ -105,6 +115,36 @@ function getRemoteBranchHashAndMsg() {
     });
     // console.log(hashObj);
     return hashObj;
+  });
+}
+
+function getRelative() {
+  return shellExec(`git branch -vv`, {}, (std) => {
+    let branchArr = std.split('\n');
+    let localToRemote = {};
+    let remoteToLocal = {};
+    branchArr.map(str=>{
+      if (str === '') {
+        return;
+      }
+      let str_noCommit;
+      let name = /[\S]+/.exec(str.replace(/^[*| ] /, ''));
+      let hash = /[0-9a-f]{7}/.exec(str);
+      shellExec(`git show ${hash}`, {}, (std)=>{
+        // console.log(std);
+        let res = /\n\n[\s\S]+\n\n/.exec(std)[0].replace(/\n\n/g, '').replace(/^ +/, '');
+        str_noCommit = str.replace(res, '');
+      });
+      let _remote = /\[\S+\/\S+\]/.exec(str_noCommit);
+      let remote = _remote && ('remotes/' + _remote[0].replace('[', '').replace(']', ''));
+      // console.log(remote)
+      localToRemote[name] = remote;
+      remoteToLocal[_remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '')] = name;
+      // console.log(name)
+      // console.log(hash)
+    });
+    // console.log(hashObj);
+    return {remoteToLocal, localToRemote};
   });
 }
 
