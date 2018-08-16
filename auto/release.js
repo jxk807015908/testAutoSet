@@ -47,19 +47,16 @@ process.stdin.on('end', () => {
 });
 
 function release() {
-  const remoteBranchName = localToRemote[branchName]; //有前缀:remotes/
-  const localMasterBranchName = remoteToLocal['master']; //有前缀:remotes/
+  const remoteBranchName = localToRemote[branchName]; //无前缀:remotes/origin
+  const localMasterBranchName = remoteToLocal['master']; //无前缀:remotes/origin
   if(!localMasterBranchName || !remoteBranchName) {
-    console.log('localToRemote', localToRemote);
-    console.log('localToRemote', branchName);
-    console.log('localToRemote', remoteToLocal);
     console.error('找不到分支');
     process.exit(0);
   }
   console.log('开始发布版本v' + version);
   // let allBranchLeastCommit = getRemoteBranchHashAndMsg();
   let remoteMasterName = getObjValue(allBranchLeastCommit, 'remotes/\\S+/master')[0];
-  // let remoteDevName = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
+  let remoteBranchNameHaveBehand = getObjValue(allBranchLeastCommit, `remotes/\\S+/${branchName}`)[0];
   // let localDevName = getObjValue(allBranchLeastCommit, branchName)[0];
   shellExec(`git checkout ${localMasterBranchName}`, {}, () => {
     resetArr.push(`git checkout ${branchName}`);
@@ -83,7 +80,7 @@ function release() {
   shellExec(`git push origin ${branchName}:${remoteBranchName}`, {}, ()=>{
     resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
     resetArr.push(`git push origin ${branchName} --force`);
-    resetArr.push(`git reset --hard ${allBranchLeastCommit[branchName]}`);
+    resetArr.push(`git reset --hard ${allBranchLeastCommit[remoteBranchNameHaveBehand]}`);
   });
   if (/^(\d+.\d+.\d+)$/.test(version)) {
     shellExec('npm publish');
