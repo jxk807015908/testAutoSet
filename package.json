@@ -21,7 +21,7 @@
     "promiseTest": "node auto/promiseTest.js",
     "release": "node auto/release.js",
     "readline": "node auto/readline.js",
-    "release2": "node auto/beta-release.js -t -p -d"
+    "release2": "node auto/beta-release.js -p -d"
   },
   "dependencies": {},
   "devDependencies": {},
