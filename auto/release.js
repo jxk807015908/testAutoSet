@@ -39,7 +39,6 @@ process.stdin.on('readable', () => {
       console.error('请输入正确的版本号！！！');
     }
   }
-
 });
 process.stdin.on('end', () => {
   if (branchName === undefined) {

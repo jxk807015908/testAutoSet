@@ -19,7 +19,9 @@
     "pub4": "node auto/nodeShell.js",
     "test": "node auto/testReg.js",
     "promiseTest": "node auto/promiseTest.js",
-    "release": "node auto/release.js"
+    "release": "node auto/release.js",
+    "readline": "node auto/readline.js",
+    "release2": "node auto/beta-release.js -t"
   },
   "dependencies": {},
   "devDependencies": {},
