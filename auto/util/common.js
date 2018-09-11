@@ -89,7 +89,7 @@ exports.checkPublishUrl = (publishUrl)=>{
 
 exports.checkIsSourceProject = (sourceUrl)=>{
   return nodeShell('git config --list', shellOption, (stdout)=>{
-    let reg = new RegExp(`remote.${origin}.url=http:\\/\\/\\S+`, 'i');
+    let reg = new RegExp(`remote.${origin}.url=https:\\/\\/\\S+`, 'i');
     // console.log('origin', origin);
     let res = reg.exec(stdout);
     let url = res && res.constructor === Array && res[0].split('=')[1];
