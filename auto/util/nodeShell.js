@@ -10,6 +10,8 @@ function nodeShell(str, option, fn, errFn) {
   let res = shell.exec(str, {silent: resOption.silent});
   let code = res.code;
   let stdout = res.stdout;
+  console.log(resOption.codeMsg);
+  console.log(str + ': ' + code);
   resOption.codeMsg && console.log(str + ': ' + code);
   // console.warn(code);
   if (code && !resOption.ignoreErr) {
