@@ -23,8 +23,12 @@
     "readline": "node auto/readline.js",
     "release2": "node auto/beta-release.js -p -d"
   },
-  "dependencies": {},
-  "devDependencies": {},
+  "dependencies": {
+    "socket.io-client": "^2.1.1"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0"
+  },
   "engines": {
     "node": ">= 6.0.0",
     "npm": ">= 3.0.0"

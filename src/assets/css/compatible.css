@@ -1,0 +1,46 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.compatible {
+  /* height: 100%; */
+  padding-top: 30px;
+  text-align: center;
+  background: #2f3341;
+  color: #fff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999999999999;
+}
+
+.suppport_title {
+  font: 30px/70px "";
+}
+
+.suppport_sub_title {
+  font: 40px/70px "";
+}
+
+.browser {
+  padding: 125px;
+}
+
+.browser a {
+  display: inline-block;
+  padding: 0 50px;
+}
+
+.browser img {
+  border: none !important;
+}
