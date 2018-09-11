@@ -123,6 +123,7 @@ function beforeRelease() {
 
 function shellExec(str, option, fn) {
   return nodeShell(str, Object.assign({}, config.shellOption, option), fn, ()=>{
+    console.log(resetArr);
     resetArr.length !== 0 && reset();
     process.exit(0);
   });
