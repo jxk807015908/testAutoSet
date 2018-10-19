@@ -24,7 +24,11 @@
     "release2": "node auto/beta-release.js -p -d",
     "release:noMerge": "node auto/beta-release.js -p"
   },
+  "bin": {
+    "testautoset": "src/main.js"
+  },
   "dependencies": {
+    "phantomjs": "^2.1.7",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {

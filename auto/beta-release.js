@@ -114,8 +114,8 @@ function publishNpm(v) {
 }
 
 function beforeRelease() {
-  let flag;
-  flag = checkIsSourceProject(config.sourceProjectUrl) && checkCommit() && !(config.isNeedNpmPublish && !checkNpmPublishUrl(config.npmPublishUrl));
+  let flag = true;
+  // flag = checkIsSourceProject(config.sourceProjectUrl) && checkCommit() && !(config.isNeedNpmPublish && !checkNpmPublishUrl(config.npmPublishUrl));
   if (!flag) {
     process.exit(0);
   }
