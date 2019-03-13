@@ -16,7 +16,12 @@ let _branchName;
 let relative = getRelative();
 const localToRemote = relative.localToRemote;
 const remoteToLocal = relative.remoteToLocal;
+const HEAD = relative.HEAD;
 let allBranchLeastCommit = getAllBranchHashAndMsg();
+console.log('localToRemote', localToRemote);
+console.log('remoteToLocal', remoteToLocal);
+console.log('allBranchLeastCommit', allBranchLeastCommit);
+console.log('HEAD', HEAD);
 console.log('请输入你要发布的本地分支:');
 rl.on('line', (chunk) => {
   const input = chunk && chunk.replace(/\n$/, '');

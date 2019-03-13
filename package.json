@@ -21,14 +21,18 @@
     "promiseTest": "node auto/promiseTest.js",
     "release": "node auto/release.js",
     "readline": "node auto/readline.js",
-    "release2": "node auto/beta-release.js -p -d",
+    "release2": "node auto/release.js -p -d -t",
     "release:noMerge": "node auto/beta-release.js -p"
   },
   "bin": {
     "testautoset": "src/main.js"
   },
   "dependencies": {
+    "inquirer": "^6.2.2",
+    "ora": "^3.1.0",
     "phantomjs": "^2.1.7",
+    "shell": "^0.5.0",
+    "shelljs": "^0.8.3",
     "socket.io-client": "^2.1.1"
   },
   "devDependencies": {

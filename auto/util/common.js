@@ -17,13 +17,14 @@ exports.getAllBranchHashAndMsg = ()=> {
     // console.log(hashObj);
     return hashObj;
   });
-}
+};
 
 exports.getRelative = ()=> {
   return nodeShell(`git branch -vv`, shellOption, (std) => {
     let branchArr = std.split('\n');
     let localToRemote = {};
     let remoteToLocal = {};
+    let HEAD;
     branchArr.map(str=>{
       if (str === '') {
         return;
@@ -47,11 +48,14 @@ exports.getRelative = ()=> {
       // remoteToLocal[_remote && _remote[0].replace('[', '').replace(']', '').replace(/^\S+\//, '')] = name;
       // console.log(name)
       // console.log(hash)
+      if (/^\*/.test(str)) {
+        HEAD = name[0];
+      }
     });
-    // console.log(hashObj);
-    return {remoteToLocal, localToRemote};
+    // console.log(localToRemote);
+    return {remoteToLocal, localToRemote, HEAD};
   });
-}
+};
 
 exports.getObjValue = (obj, reg) => {
   let regExp = new RegExp(reg);
@@ -60,7 +64,7 @@ exports.getObjValue = (obj, reg) => {
     regExp.test(str) && arr.push(str);
   });
   return arr;
-}
+};
 
 exports.checkCommit = ()=>{
   return nodeShell('git status', shellOption, (std) => {
@@ -73,12 +77,11 @@ exports.checkCommit = ()=>{
   });
 };
 
-
 exports.checkPublishUrl = (publishUrl)=>{
   return nodeShell('npm config list', shellOption, (stdout)=>{
     let res = /http:\/\/\S+/i.exec(stdout);
     let url = res && res.constructor === Array && res[0].split('"')[0];
-    if(url !== publishUrl) {
+    if (url !== publishUrl) {
       console.error(`请配置npm地址为"${publishUrl}"再进行发布`);
       return false;
     } else {
@@ -89,7 +92,7 @@ exports.checkPublishUrl = (publishUrl)=>{
 
 exports.checkIsSourceProject = (sourceUrl)=>{
   return nodeShell('git config --list', shellOption, (stdout)=>{
-    let reg = new RegExp(`remote.${origin}.url=https:\\/\\/\\S+`, 'i');
+    let reg = new RegExp(`remote.${origin}.url=\\S+`, 'i');
     // console.log('origin', origin);
     let res = reg.exec(stdout);
     let url = res && res.constructor === Array && res[0].split('=')[1];

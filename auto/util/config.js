@@ -3,7 +3,7 @@ module.exports = {
   origin: 'origin',
   npmPublishUrl: 'http://192.168.0.236:8081/repository/djcpsnpm-host/',
   isNeedNpmPublish: process.argv.includes('-p'),
-  sourceProjectUrl: 'https://github.com/jxk807015908/testAutoSet.git',
+  sourceProjectUrl: 'http://192.168.0.169/web/djweb-templates.git',
   isDirectRelease: process.argv.includes('-d'),
   shellOption: {
     codeMsg: true

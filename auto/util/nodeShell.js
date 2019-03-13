@@ -7,14 +7,13 @@ const DEFAULT_OPTION = {
 
 function nodeShell(str, option, fn, errFn) {
   let resOption = Object.assign({}, DEFAULT_OPTION, option);
-  let res = shell.exec(str, {silent: resOption.silent});
+  let { silent, ignoreErr, codeMsg } = resOption;
+  let res = shell.exec(str, {silent, async: false});
   let code = res.code;
   let stdout = res.stdout;
-  console.log(resOption.codeMsg);
-  console.log(str + ': ' + code);
-  resOption.codeMsg && console.log(str + ': ' + code);
+  codeMsg && console.log(str + ': ' + code);
   // console.warn(code);
-  if (code && !resOption.ignoreErr) {
+  if (code && !ignoreErr) {
     // console.log('发布出错！！！！！');
     console.log(res.stderr);
     return errFn && errFn();
